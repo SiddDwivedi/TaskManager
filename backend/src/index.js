@@ -46,9 +46,25 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+
+  // Auto-seed if database is empty
+  try {
+    const { PrismaClient } = require('@prisma/client');
+    const prisma = new PrismaClient();
+    const userCount = await prisma.user.count();
+    if (userCount === 0) {
+      console.log('📦 Empty database detected — running seed...');
+      require('./seed');
+    } else {
+      console.log(`👥 Database has ${userCount} users — skipping seed`);
+    }
+    await prisma.$disconnect();
+  } catch (e) {
+    console.log('⚠️ Auto-seed check skipped:', e.message);
+  }
 });
 
 module.exports = app;
