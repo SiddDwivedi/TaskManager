@@ -39,7 +39,7 @@ export default function Login() {
     <div className="auth-page">
       <div className="auth-left">
         <h1>Team Task Manager</h1>
-        <h1 style={{ fontSize: 36, fontWeight: 800, marginBottom: 16, color: '#1a1a2e' }}>
+        <h1 style={{ fontSize: 36, fontWeight: 800, marginBottom: 16, color: 'var(--text-primary)' }}>
           Sign in to manage projects, tasks, and progress in one calm workspace.
         </h1>
         <p>Sign in to manage projects, assign work, track overdue items, and keep the team aligned from one place.</p>
