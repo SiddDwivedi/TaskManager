@@ -216,24 +216,39 @@ export default function Layout({ children, title }) {
                       </div>
                     )}
                     {!notifLoading && notifications.map(n => (
-                      <Link to={n.link} key={n.id} onClick={() => setShowNotif(false)} style={{ textDecoration: 'none', display: 'block' }}>
-                        <div style={{
-                          padding: '12px 18px', borderBottom: '1px solid var(--border-light)',
-                          display: 'flex', gap: 10, alignItems: 'flex-start', cursor: 'pointer',
-                          background: n.type === 'warning' ? 'var(--stat-red)' : 'transparent',
-                          transition: 'background 0.15s',
-                        }}
-                          onMouseEnter={e => e.currentTarget.style.background = 'var(--table-hover)'}
-                          onMouseLeave={e => e.currentTarget.style.background = n.type === 'warning' ? 'var(--stat-red)' : 'transparent'}
-                        >
-                          <span style={{ fontSize: 18, flexShrink: 0 }}>{n.icon}</span>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.4 }}>{n.text}</div>
-                            {n.sub && <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{n.sub}</div>}
+                      <div key={n.id} style={{ position: 'relative', display: 'block' }}>
+                        <Link to={n.link} onClick={() => setShowNotif(false)} style={{ textDecoration: 'none', display: 'block' }}>
+                          <div style={{
+                            padding: '12px 40px 12px 18px', borderBottom: '1px solid var(--border-light)',
+                            display: 'flex', gap: 10, alignItems: 'flex-start', cursor: 'pointer',
+                            background: n.type === 'warning' ? 'var(--stat-red)' : 'transparent',
+                            transition: 'background 0.15s',
+                          }}
+                            onMouseEnter={e => e.currentTarget.style.background = 'var(--table-hover)'}
+                            onMouseLeave={e => e.currentTarget.style.background = n.type === 'warning' ? 'var(--stat-red)' : 'transparent'}
+                          >
+                            <span style={{ fontSize: 18, flexShrink: 0 }}>{n.icon}</span>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.4 }}>{n.text}</div>
+                              {n.sub && <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{n.sub}</div>}
+                            </div>
+                            <span style={{ fontSize: 11, color: 'var(--text-muted)', flexShrink: 0, whiteSpace: 'nowrap' }}>{n.time}</span>
                           </div>
-                          <span style={{ fontSize: 11, color: 'var(--text-muted)', flexShrink: 0, whiteSpace: 'nowrap' }}>{n.time}</span>
-                        </div>
-                      </Link>
+                        </Link>
+                        {/* Dismiss × button */}
+                        <button
+                          onClick={e => { e.stopPropagation(); setNotifications(prev => prev.filter(x => x.id !== n.id)); }}
+                          style={{
+                            position: 'absolute', top: '50%', right: 10, transform: 'translateY(-50%)',
+                            background: 'none', border: 'none', cursor: 'pointer', padding: '4px 6px',
+                            color: 'var(--text-muted)', fontSize: 14, lineHeight: 1, borderRadius: 6,
+                            transition: 'color 0.15s, background 0.15s',
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.background = 'var(--border)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'none'; }}
+                          title="Dismiss"
+                        >✕</button>
+                      </div>
                     ))}
                   </div>
                   <Link to="/tasks" onClick={() => setShowNotif(false)} style={{
