@@ -13,6 +13,7 @@ export default function Layout({ children, title }) {
   const [showNotif, setShowNotif] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [notifLoading, setNotifLoading] = useState(false);
+  const [hasUnread, setHasUnread] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState({ tasks: [], projects: [] });
   const [showSearch, setShowSearch] = useState(false);
@@ -72,6 +73,7 @@ export default function Layout({ children, title }) {
   const loadNotifications = async () => {
     if (showNotif) { setShowNotif(false); return; }
     setShowNotif(true);
+    setHasUnread(false); // clear dot when opened
     setNotifLoading(true);
     try {
       const res = await api.get('/dashboard');
@@ -194,16 +196,16 @@ export default function Layout({ children, title }) {
             <div ref={notifRef} style={{ position: 'relative' }}>
               <div className="top-bar-icon" onClick={loadNotifications}>
                 🔔
-                <span className="notification-dot" />
+                {hasUnread && <span className="notification-dot" />}
               </div>
               {showNotif && (
                 <div style={{
                   position: 'absolute', top: 46, right: 0, background: 'var(--dropdown-bg)',
                   border: '1px solid var(--border)', borderRadius: 16, padding: 0,
                   boxShadow: '0 8px 30px rgba(0,0,0,0.12)', width: 340, zIndex: 200,
-                  maxHeight: 420, overflow: 'hidden',
+                  display: 'flex', flexDirection: 'column',
                 }}>
-                  <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--border-light)', fontWeight: 700, fontSize: 15 }}>
+                  <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--border-light)', fontWeight: 700, fontSize: 15, flexShrink: 0 }}>
                     Notifications
                   </div>
                   <div style={{ maxHeight: 340, overflowY: 'auto' }}>
@@ -235,10 +237,13 @@ export default function Layout({ children, title }) {
                     ))}
                   </div>
                   <Link to="/tasks" onClick={() => setShowNotif(false)} style={{
-                    display: 'block', textAlign: 'center', padding: '10px', fontSize: 13,
-                    color: 'var(--accent)', fontWeight: 600, borderTop: '1px solid var(--border-light)',
-                    textDecoration: 'none',
-                  }}>
+                    display: 'block', textAlign: 'center', padding: '12px', fontSize: 13,
+                    color: 'var(--accent)', fontWeight: 600, borderTop: '1px solid var(--border)',
+                    textDecoration: 'none', flexShrink: 0, borderRadius: '0 0 16px 16px',
+                  }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--table-hover)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
                     View all tasks →
                   </Link>
                 </div>
